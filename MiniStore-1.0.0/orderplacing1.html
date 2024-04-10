@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order-Liga Shop</title>
+  <style>
+    /* Basic styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #b6b6b6;
+      color: rgb(255, 255, 255);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3e3e3e;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Place Your Order</h2>
+    <form id="orderForm">
+      <label for="address" ></label>
+      <input type="text" id="address" name="address" required placeholder="Address">
+      
+      <label for="phone"></label>
+      <input type="tel" id="phone" name="phone" required placeholder="Whatsapp Number">
+      
+      <label for="product"></label>
+      <select id="product" name="product" required>
+        <option value="pink watch">Pink watch</option>
+        <option value="heavy watch">Heavy watch</option>
+        <option value="spotted watch">Spotted watch</option>
+        <option value="black watch">Black watch</option>
+        <option value="black watch digital">Black watch(Digital)</option>
+      </select>
+      
+      
+      <button type="submit">Order</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('orderForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      // Get form data
+      var formData = new FormData(this);
+      var formDataJSON = {  };
+      formData.forEach(function(value, key){
+        formDataJSON[key] = value;
+      });
+      var jsonData = JSON.stringify(formDataJSON);
+
+      // Send data to Telegram bot
+      var botToken = '7105460605:AAG9KUuyQrYIgWW5aGJHLDEiSM_-3Ibc4Wg';
+      var chatID = '6580559134';
+      var message = "New Order:\n\n" + jsonData;
+
+      fetch('https://api.telegram.org/bot' + botToken + '/sendMessage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: chatID,
+          text: message
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        alert('Order placed successfully!');
+        document.getElementById('orderForm').reset(); // Reset form after successful submission
+      })
+      .catch(error => {
+        console.error('There was a problem with your fetch operation:', error);
+        alert('Failed to place order. Please try again later.');
+      });
+    });
+  </script>
+</body>
+</html>
